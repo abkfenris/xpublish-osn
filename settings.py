@@ -28,6 +28,7 @@ class XpublishSettings(BaseSettings):
     host: str = "0.0.0.0"
     port: int = 9005
     log_level: str = "debug"
+    proxied: bool = True
 
     def __init__(self) -> None:
         super().__init__()

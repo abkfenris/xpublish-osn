@@ -66,4 +66,5 @@ if __name__ == "__main__":
         reload=settings.development,
         log_level=settings.log_level,
         debug=settings.development,
+        proxy_headers=settings.proxied,
     )

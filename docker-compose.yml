@@ -8,3 +8,5 @@ services:
     environment:
       - 'erddap_servers={"neracoos": "http://neracoos.org/erddap/"}'
       - development=True
+      - proxied=False
+      
