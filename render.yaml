@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: xpublish
+    env: docker
+    region: ohio
+    plan: free
+    envVars:
+      - key: erddap_servers
+        value: '{"neracoos": "http://neracoos.org/erddap/"}'

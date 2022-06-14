@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  xpublish:
+    build: .
+    ports:
+      - "9005:9005"
+    environment:
+      - 'erddap_servers={"neracoos": "http://neracoos.org/erddap/"}'
+      - development=True
