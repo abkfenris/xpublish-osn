@@ -1,3 +1,4 @@
+import os
 from typing import Optional
 
 import httpx
@@ -14,9 +15,12 @@ def get_all_erddap_servers():
 
     servers = {}
 
+    exclude_servers = set(os.environ.get("EXCLUDE_DEFAULT_SERVERS", "").split(","))
+
     for server in data:
         if server["public"]:
-            servers[server["short_name"]] = server["url"]
+            if server["short_name"] not in exclude_servers:
+                servers[server["short_name"]] = server["url"]
 
     return servers
 

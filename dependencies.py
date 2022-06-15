@@ -1,3 +1,6 @@
+import json
+import ssl
+
 from fastapi import Depends, Path
 import httpx
 import xarray as xr
@@ -6,6 +9,7 @@ from xpublish.dependencies import get_cache
 from xpublish.utils.cache import CostTimer
 
 from settings import settings
+from logger import logger
 
 xr.set_options(keep_attrs=True)
 
@@ -35,6 +39,8 @@ async def datasets_for_server(server_base_url: str) -> dict[str, str]:
 
     async with httpx.AsyncClient(headers=headers) as client:
         r = await client.get(url, follow_redirects=True)
+
+    r.raise_for_status()
 
     data = r.json()["table"]
 
@@ -69,10 +75,28 @@ async def get_datasets(cache=Depends(get_cache)):
     if not datasets:
         with CostTimer() as ct:
             for server_id, server_url in settings.erddap_servers.items():
-                server_datasets = await datasets_for_server(server_url)
+                try:
+                    server_datasets = await datasets_for_server(server_url)
 
-                for dataset_id, dataset_url in server_datasets.items():
-                    datasets[f"{server_id}-{dataset_id}"] = dataset_url
+                    for dataset_id, dataset_url in server_datasets.items():
+                        datasets[f"{server_id}-{dataset_id}"] = dataset_url
+                except httpx.HTTPStatusError:
+                    logger.warning(f"{server_url} does not appear to have griddap data")
+                except (httpx.ReadTimeout, httpx.ConnectTimeout):
+                    logger.warning(f"Timeout reading from {server_url}")
+                except ssl.SSLCertVerificationError:
+                    logger.warning(f"SSL verification error for {server_url}")
+                except (
+                    json.decoder.JSONDecodeError,
+                    httpx.ConnectError,
+                    httpx.ConnectTimeout,
+                ):
+                    logger.exception(
+                        f"Error loading data from {server_url}",
+                        # exc_info=True,
+                        # stack_info=True,
+                        extra={"server_url": server_url},
+                    )
 
         cache.put(cache_key, datasets, ct.time)
 
