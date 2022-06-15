@@ -36,7 +36,7 @@ ds = xr.open_zarr(mapper, consolidated=True)
 """
 
 app.openapi_tags = [
-    {"name": "info"},
+    {"name": "info", "description": "Dataset metadata"},
     {
         "name": "edr",
         "description": edr_description,
@@ -46,6 +46,7 @@ app.openapi_tags = [
         },
     },
     {"name": "zarr", "description": zarr_description},
+    {"name": "default", "description": "xpublish and environment metadata"},
 ]
 
 if __name__ == "__main__":
