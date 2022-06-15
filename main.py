@@ -3,13 +3,7 @@ from xpublish import dependencies as x_dep
 from xpublish.routers import base_router, zarr_router
 from xpublish_edr.cf_edr_router import cf_edr_router
 
-from dependencies import (
-    datasets_for_server,
-    get_datasets,
-    dataset_ids,
-    get_dataset,
-    get_some_datasets,
-)
+from dependencies import dataset_ids, get_dataset, get_some_datasets
 from settings import settings
 
 rest = xpublish.Rest(
