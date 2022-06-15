@@ -1,10 +1,14 @@
 from fastapi import Depends, Path
 import httpx
 import xarray as xr
+import cf_xarray as cfxr
 from xpublish.dependencies import get_cache
 from xpublish.utils.cache import CostTimer
 
 from settings import settings
+
+xr.set_options(keep_attrs=True)
+
 
 headers = {"user-agent": settings.user_agent, "accept": "application/json"}
 
