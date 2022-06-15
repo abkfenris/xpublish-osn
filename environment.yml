@@ -14,5 +14,6 @@ dependencies:
   - cf_xarray
   - pydantic
   - httpx
+  - sentry-sdk
   - pip:
       - git+https://github.com/gulfofmaine/xpublish-edr.git@454fed1aa4fbb33db194357e9b61f295d087c623
