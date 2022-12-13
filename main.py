@@ -1,24 +1,15 @@
-import intake
 import xpublish
+from xpublish import dependencies
 from xpublish.routers import base_router, zarr_router
 from xpublish_edr.cf_edr_router import cf_edr_router
 from xpublish_opendap import dap_router
 from xpublish_wms import cf_wms_router
+import xarray as xr
 
+import catalog
 from settings import settings
 from logger import logger
 
-
-def load_datasets():
-    url = 'https://mghp.osn.xsede.org/rsignellbucket1/catalogs/ioos_intake_catalog.yml'
-    cat = intake.open_catalog(url)
-
-    datasets = {}
-
-    for key in cat:
-        datasets[key] = cat[key].to_dask()
-
-    return datasets
 
 
 
@@ -27,12 +18,10 @@ def load_datasets():
 def init_app():
     logger.info(f"Xpublish settings: {settings.dict()}. Loading datasets")
 
-    datasets = load_datasets()
-
-    logger.info(f"Loaded datasets from intake: {datasets}")
-
     rest = xpublish.Rest(
-        datasets,
+        {   key: xr.Dataset()
+            for key in catalog.catalog_datasets()
+        },
         routers=[
             (base_router, {"tags": ["info"]}),
             (cf_edr_router, {"tags": ["edr"], "prefix": "/edr"}),
@@ -44,6 +33,8 @@ def init_app():
 
     app = rest.app
 
+    app.dependency_overrides[dependencies.get_dataset_ids] = catalog.dataset_ids
+    app.dependency_overrides[dependencies.get_dataset] = catalog.get_dataset
 
     edr_description = """
     OGC Environmental Data Retrieval API

@@ -1,5 +1,5 @@
-# xpublish-erddap
+# xpublish-osn
 
-Exploring using Xpublish to provide additional services for ERDDAP.
+Exploring using Xpublish to provide additional services for datasets on the Open Storage Network.
 
-Check out the deployment at https://xpublish.onrender.com/docs
+Check out the deployment at https://xpublish-osn-demo.onrender.com/docs
