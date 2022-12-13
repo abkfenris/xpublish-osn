@@ -1,45 +1,49 @@
+import intake
 import xpublish
-from xpublish import dependencies as x_dep
 from xpublish.routers import base_router, zarr_router
 from xpublish_edr.cf_edr_router import cf_edr_router
+from xpublish_opendap import dap_router
+from xpublish_wms import cf_wms_router
 
-from dependencies import dataset_ids, get_dataset, get_some_datasets
 from settings import settings
 from logger import logger
 
 
-def init_app():
-    logger.info(f"Xpublish settings: {settings.dict()}")
+def load_datasets():
+    url = 'https://mghp.osn.xsede.org/rsignellbucket1/catalogs/ioos_intake_catalog.yml'
+    cat = intake.open_catalog(url)
 
-    initial_datasets = get_some_datasets()
+    datasets = {}
+
+    for key in cat:
+        datasets[key] = cat[key].to_dask()
+
+    return datasets
+
+
+
+
+
+def init_app():
+    logger.info(f"Xpublish settings: {settings.dict()}. Loading datasets")
+
+    datasets = load_datasets()
+
+    logger.info(f"Loaded datasets from intake: {datasets}")
 
     rest = xpublish.Rest(
-        initial_datasets,
+        datasets,
         routers=[
             (base_router, {"tags": ["info"]}),
             (cf_edr_router, {"tags": ["edr"], "prefix": "/edr"}),
+            (dap_router, {"tags": ["opendap"], "prefix": "/opendap"}),
             (zarr_router, {"tags": ["zarr"], "prefix": "/zarr"}),
+            (cf_wms_router, {"tags": ["wms"], "prefix": "/wms"})
         ],
     )
 
     app = rest.app
 
-    app.dependency_overrides[x_dep.get_dataset_ids] = dataset_ids
-    app.dependency_overrides[x_dep.get_dataset] = get_dataset
-
-    if settings.sentry_dsn:
-        from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
-
-        app.add_middleware(SentryAsgiMiddleware)
-
-    @app.get("/servers")
-    def erddap_servers():
-        """ 
-        ERDDAP server IDs and URLs 
-
-        `/dataset/{dataset_id}/` in paths are constructed of `{server_id}-{erddap_dataset_id}`
-        """
-        return settings.erddap_servers
 
     edr_description = """
     OGC Environmental Data Retrieval API
@@ -89,7 +93,7 @@ if __name__ == "__main__":
         port=settings.port,
         reload=settings.development,
         log_level=settings.log_level,
-        debug=settings.development,
+        # debug=settings.development,
         proxy_headers=settings.proxied,
         factory=True,
     )

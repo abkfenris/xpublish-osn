@@ -6,7 +6,11 @@ dependencies:
   - git
   - xarray
   - netCDF4
-  - xpublish
+  # - xpublish
+  - intake
+  - intake-xarray
+  - s3fs
+  - adlfs
   - zarr
   - dask
   - distributed
@@ -15,5 +19,11 @@ dependencies:
   - pydantic
   - httpx
   - sentry-sdk
+  - requests
+  - aiohttp
   - pip:
+      - opendap_protocol
+      - git+https://github.com/abkfenris/xpublish.git@4f24a78e2c21e8ce3167d1333a71dcfbea59cdc6
       - git+https://github.com/gulfofmaine/xpublish-edr.git@454fed1aa4fbb33db194357e9b61f295d087c623
+      - git+https://github.com/gulfofmaine/xpublish-opendap.git@0d8185ea3b12a565229eb375a658b27226197fcd
+      - git+https://github.com/asascience-open/xpublish-wms.git@ec6a4a3de79dbce41e686d069c0ed466841e5fb3

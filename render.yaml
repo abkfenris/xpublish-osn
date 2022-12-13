@@ -5,8 +5,3 @@ services:
     env: docker
     region: ohio
     plan: free
-    envVars:
-      # - key: erddap_servers
-      #   value: '{"neracoos": "http://neracoos.org/erddap/"}'
-      - key: EXCLUDE_DEFAULT_SERVERS
-        value: BCODMO,IOOS Sensors,CeNOOS ERDDAP,NGDAC,SECOORA,OSMC,ONC,OOI,OOI Goldcopy,OTN,COOPS NOS,UCSD,BMLSC,MDA,PMEL,ALAMO,Hakai,NANOOS,NCI,ICHEC,SmartAtlantic,ATN IOOS,DIVER,JEOPP,GCOOS,CEOE,CIOOS Atlantic,CIOOS Pacific,EMSO ERIC,CanWIN,NOAA Oceanview,IOC IODE OA

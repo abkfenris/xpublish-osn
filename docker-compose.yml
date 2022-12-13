@@ -6,9 +6,7 @@ services:
     ports:
       - "9005:9005"
     environment:
-      # - 'erddap_servers={"neracoos": "http://neracoos.org/erddap/"}'
       - development=True
       - proxied=False
-      - EXCLUDE_DEFAULT_SERVERS=BCODMO,IOOS Sensors,CeNOOS ERDDAP,NGDAC,SECOORA,OSMC,ONC,OOI,OOI Goldcopy,OTN,COOPS NOS,UCSD,BMLSC,MDA,PMEL,ALAMO,Hakai,NANOOS,NCI,ICHEC,SmartAtlantic,ATN IOOS,DIVER,JEOPP,GCOOS,CEOE,CIOOS Atlantic,CIOOS Pacific,EMSO ERIC,CanWIN,NOAA Oceanview,IOC IODE OA
     volumes:
       - ./:/home/xpublish/
