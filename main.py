@@ -67,9 +67,11 @@ def init_app():
         {"name": "default", "description": "xpublish and environment metadata"},
     ]
 
-    app.title = "xpublish & ERDDAP"
+    app.title = "xpublish & Open Storage Network"
     app.description = """
-    Experimenting with xpublish and ERDDAP servers.
+    Experimenting with xpublish and Open Storage Network datasets.
+
+    https://github.com/abkfenris/xpublish-osn
     """
 
     return app
